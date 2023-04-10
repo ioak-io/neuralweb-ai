@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-import app.main.service.similarity_service as similarity_service
+import src.main.service.similarity_service as similarity_service
 
 similarity_controller = Blueprint('similarity_controller', __name__)
 
