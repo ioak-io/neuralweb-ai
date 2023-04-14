@@ -7,4 +7,13 @@ services:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 5000:5000
+      - 5003:5003
+    networks:
+      ioak-net:
+        aliases:
+          - neuralwebai.docker
+
+networks:
+  ioak-net:
+    external: true
+
