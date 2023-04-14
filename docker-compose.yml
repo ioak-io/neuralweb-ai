@@ -3,6 +3,7 @@ version: '3.4'
 services:
   neuralwebai:
     image: neuralwebai
+    container_name: neuralwebai
     build:
       context: .
       dockerfile: ./Dockerfile
