@@ -2,9 +2,9 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
 
-DATABASE_URI = os.environ.get('DATABASE_URI')
-if DATABASE_URI is None:
-    DATABASE_URI = 'mongodb://localhost:27017'
+MONGODB_URI = os.environ.get('MONGODB_URI')
+if MONGODB_URI is None:
+    MONGODB_URI = 'mongodb://localhost:27017'
 
 __connection_map = {}
 
@@ -12,7 +12,7 @@ __connection_map = {}
 def get_collection(space, collection):
     _db_name = 'neuralweb_' + space
     if _db_name not in __connection_map.keys():
-        __connection_map[_db_name] = MongoClient(DATABASE_URI)[_db_name]
+        __connection_map[_db_name] = MongoClient(MONGODB_URI)[_db_name]
     return __connection_map.get(_db_name)[collection]
 
 def clean_object(data):

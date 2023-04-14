@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      MONGODB_URI: mongodb://mongo.docker:27017
     ports:
       - 5003:5003
     networks:
