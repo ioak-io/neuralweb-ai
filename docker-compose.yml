@@ -9,6 +9,10 @@ services:
       dockerfile: ./Dockerfile
     environment:
       MONGODB_URI: mongodb://mongo.docker:27017
+      MINIO_URL: api.ioak.io
+      MINIO_PORT: 8090
+      MINIO_ACCESS_KEY: a2BSMeluIRysoTT6
+      MINIO_SECRET: WoCjAVV0O4D8AzL3MWYmo2oR3NVWvora
     ports:
       - 5003:5003
     networks:
