@@ -4,6 +4,7 @@ services:
   neuralwebai:
     image: neuralwebai
     container_name: neuralwebai
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
