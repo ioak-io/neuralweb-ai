@@ -13,7 +13,7 @@ if MINIO_URL is None:
 
 MINIO_PORT = os.environ.get('MINIO_PORT')
 if MINIO_PORT is None:
-    MINIO_PORT = '8090'
+    MINIO_PORT = '8085'
 
 MINIO_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY')
 if MINIO_ACCESS_KEY is None:

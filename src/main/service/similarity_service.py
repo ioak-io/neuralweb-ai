@@ -78,20 +78,32 @@ def get_keywords(vectorizer, doc):
     return list(keywords.keys())
 
 
+def _get_stopwords(space):
+    stopwords_collection = get_collection(space, 'stopwords')
+    response = []
+    for item in list(stopwords_collection.find()):
+        response.append(item['text'])
+    return response
+
+
 def train(space):
     note_collection = get_collection(space, 'note')
     note_list = clean_array(list(note_collection.find()))
     content_list = [o['contentText'] for o in note_list]
-    stopwords = stopwords_dictionary.stopwordsEn
+    # stopwords = stopwords_dictionary.stopwordsEn
+    stopwords = _get_stopwords(space)
 
     vectorizer = TfidfVectorizer(
         stop_words=stopwords, smooth_idf=True, use_idf=True)
 
     vectorizer.fit_transform(content_list)
 
-    # feature_names = vectorizer.get_feature_names_out()
+    feature_names = vectorizer.get_feature_names_out()
     minio_utils.save(vectorizer, _get_vectorizer_filename(space))
-    return {}
+    keywords_collection = get_collection(space, 'keywords')
+    keywords_collection.delete_many({})
+    keywords_collection.insert_one({'data': list(feature_names)})
+    return list(feature_names)
 
 
 def populate_keywords(space):
