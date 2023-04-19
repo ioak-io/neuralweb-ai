@@ -111,6 +111,8 @@ def train(space):
     keywords_collection.delete_many({})
     keywords_collection.insert_one({'data': list(feature_names)})
 
+    print(lemmatize_sentence(clean_text('perception perceive perceiving eating running')))
+
     return list(feature_names)
 
 
