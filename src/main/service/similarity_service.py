@@ -117,9 +117,9 @@ def train(space):
 
 
 def _get_text_from_note(note):
-    text = note['name'] + note['contentText']
+    text = note['name'] + ' ' + note['contentText']
     if ('summary' in note):
-        text += note['summary']
+        text += ' ' + note['summary']
     return lemmatize_sentence(clean_text(text))
 
 
