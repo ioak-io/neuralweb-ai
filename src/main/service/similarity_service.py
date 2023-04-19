@@ -3,11 +3,18 @@ import pandas as pd
 from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne
 from bson.objectid import ObjectId
 from sklearn.feature_extraction.text import TfidfVectorizer
+import nltk
+from nltk.stem import WordNetLemmatizer
+
 from src.main.utils.db_connection_factory import get_collection, clean_array
-import src.main.service.stopwords_dictionary as stopwords_dictionary
+from src.main.service.lemmatizer_helper import lemmatize_sentence
 import src.main.utils.minio_utils as minio_utils
 
+lemmatizer = WordNetLemmatizer()
+
+
 PUNCTUATION = """!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
+NUMERIC = "0123456789"
 TOP_K_KEYWORDS = 10  # top k number of keywords to retrieve in a ranked document
 
 
@@ -22,7 +29,7 @@ def clean_text(text):
     text = text.lower()
 
     # Removing punctuation
-    text = "".join([c for c in text if c not in PUNCTUATION])
+    text = "".join([c for c in text if c not in (PUNCTUATION + NUMERIC)])
 
     # Removing whitespace and newlines
     text = re.sub('\s+', ' ', text)
@@ -89,7 +96,7 @@ def _get_stopwords(space):
 def train(space):
     note_collection = get_collection(space, 'note')
     note_list = clean_array(list(note_collection.find()))
-    content_list = [o['contentText'] for o in note_list]
+    content_list = [_get_text_from_note(o) for o in note_list]
     # stopwords = stopwords_dictionary.stopwordsEn
     stopwords = _get_stopwords(space)
 
@@ -103,7 +110,15 @@ def train(space):
     keywords_collection = get_collection(space, 'keywords')
     keywords_collection.delete_many({})
     keywords_collection.insert_one({'data': list(feature_names)})
+
     return list(feature_names)
+
+
+def _get_text_from_note(note):
+    text = note['name'] + note['contentText']
+    if ('summary' in note):
+        text += note['summary']
+    return lemmatize_sentence(clean_text(text))
 
 
 def populate_keywords(space):
@@ -112,7 +127,7 @@ def populate_keywords(space):
     vectorizer = minio_utils.load(_get_vectorizer_filename(space))
     db_operations = []
     for note in note_list:
-        keywords = get_keywords(vectorizer, note['contentText'])
+        keywords = get_keywords(vectorizer, _get_text_from_note(note))
         operation = UpdateOne({'_id': ObjectId(note['_id'])}, {
                               '$set': {'keywords': keywords}})
         db_operations.append(operation)
@@ -154,7 +169,7 @@ def populate_for_note(space, reference):
     if (source_note == None):
         return {'status': 'note not found', 'links': 0}
     vectorizer = minio_utils.load(_get_vectorizer_filename(space))
-    keywords = get_keywords(vectorizer, source_note['contentText'])
+    keywords = get_keywords(vectorizer, _get_text_from_note(source_note))
     source_note['keywords'] = keywords
     note_collection.update_one({'reference': reference}, {
                                '$set': {'keywords': keywords}})
