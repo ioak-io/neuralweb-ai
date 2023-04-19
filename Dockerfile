@@ -12,9 +12,9 @@ ENV PYTHONUNBUFFERED=1
 # Install pip requirements
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
-RUN python -m nltk.downloader punkt
-RUN python -m nltk.downloader wordnet
-RUN python -m nltk.downloader averaged_perceptron_tagger
+RUN [ "python", "-c", "import nltk; nltk.download('wordnet', download_dir='/usr/local/nltk_data')" ]
+RUN [ "python", "-c", "import nltk; nltk.download('punkt', download_dir='/usr/local/nltk_data')" ]
+RUN [ "python", "-c", "import nltk; nltk.download('averaged_perceptron_tagger', download_dir='/usr/local/nltk_data')" ]
 
 WORKDIR /app
 COPY . /app
