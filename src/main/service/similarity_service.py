@@ -29,7 +29,7 @@ def clean_text(text):
     text = text.lower()
 
     # Removing punctuation
-    text = "".join([c for c in text if c not in (PUNCTUATION + NUMERIC)])
+    text = " ".join([c for c in text if c not in (PUNCTUATION + NUMERIC)])
 
     # Removing whitespace and newlines
     text = re.sub('\s+', ' ', text)
