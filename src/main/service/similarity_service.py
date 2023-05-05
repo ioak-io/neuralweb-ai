@@ -28,6 +28,7 @@ def clean_text(text):
     # Lowering text
     text = text.lower()
 
+    print(" ".join([c for c in text if c in (PUNCTUATION + NUMERIC)]))
     # Removing punctuation
     text = "".join([c for c in text if c not in (PUNCTUATION + NUMERIC)])
 
