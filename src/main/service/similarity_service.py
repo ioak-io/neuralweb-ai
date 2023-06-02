@@ -15,7 +15,7 @@ lemmatizer = WordNetLemmatizer()
 
 PUNCTUATION = """!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
 NUMERIC = "0123456789"
-TOP_K_KEYWORDS = 10  # top k number of keywords to retrieve in a ranked document
+TOP_K_KEYWORDS = 15  # top k number of keywords to retrieve in a ranked document
 
 
 def _get_vectorizer_filename(space):
@@ -193,7 +193,7 @@ def _find_links(note, note_list):
     response = []
     for item in note_list:
         keywords = _intersection(item['keywords'], note['keywords'])
-        if (len(keywords) > 0 and note['reference'] != item['reference']):
+        if (len(keywords) > 1 and note['reference'] != item['reference']):
             response.append({
                 'sourceNoteRef': note['reference'],
                 'linkedNoteRef': item['reference'],
